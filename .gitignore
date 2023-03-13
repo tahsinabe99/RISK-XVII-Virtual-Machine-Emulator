@@ -3,7 +3,7 @@
 # But descend into directories.
 !*/
 
-# Ignore tmp binary files.
+# Ignore build directory that contains tmp binary files
 build/
 
 # Files (with extension name) to include.
