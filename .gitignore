@@ -3,7 +3,7 @@
 
 # Files (with extension name) to include.
 # e.g. except sources, tests, and configurations.
-!*.c
+!*/*.c
 !*.h
 !*.mi # memory images files
 !*.s  # assembly files
