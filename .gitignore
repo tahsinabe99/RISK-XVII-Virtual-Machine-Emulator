@@ -26,6 +26,7 @@ build/
 
 # Don't ignore anything in the tests folder.
 !tests/*.*
+!examples/*.*
 
 # useful docs on gitignore:
 # https://git-scm.com/docs/gitignore
