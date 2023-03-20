@@ -1,5 +1,8 @@
 #include <stdlib.h>
 
 int main(int argc, char ** argv){
-    printf("Hello world");   
+    if(argc<2){
+        printf("Error\n");
+        return 0;
+    }
 }
