@@ -70,6 +70,7 @@ int opcode_type_check(int opcode){
     else if(opcode==0b1100111){return 2;}
     else if(opcode==0b0000011){return 2;}
     else if(opcode==0b0110011){return 1;}
+    return -1;
 }
 
 
@@ -150,10 +151,10 @@ void type_r( int instruction){
     int rs2=break_binary(instruction, 20, 24);
     int func7=break_binary(instruction, 25,31);
 
-    if(func3==0b000 & func7==0b0000000){
+    if( (func3==0b000) & (func7==0b0000000) ){
         add(rd, rs1, rs2);
     }
-    else if(func3==001 & func7==0b0000000 & opcode==0b0110011){
+    else if( (func3==001) & (func7==0b0000000) & (opcode==0b0110011)){
         sll(rd,rs1,rs2);
     }
 }
@@ -184,7 +185,7 @@ void lw(int rd, int rs1, int imm){
     int value= memory[memory_address];
     //printf("LW Memoery address: %08x\n",memory_address);
     //come back
-    int check= check_virtual_memory_access(memory_address, value);
+    check_virtual_memory_access(memory_address, value);
     if(rd!=0){
         registers[rd]=memory[registers[rs1]+imm];
     }
@@ -198,7 +199,7 @@ void lbu(int rd, int rs1, int imm){
     int memory_address=registers[rs1]+imm;
     int value= memory[memory_address];
     //printf("before memory address lbu %08x\n", memory_address);
-    int check=check_virtual_memory_access(memory_address, value);
+    check_virtual_memory_access(memory_address, value);
     if(rd!=0){
         if(memory_address>=0x00 && memory_address<0x3ff){
             memory_address=memory_address/4;
@@ -239,16 +240,16 @@ void type_i( int instruction){
          imm=immediate_num;
     }    
 
-    if(opcode==0b0010011 & func3==0b000){
+    if( (opcode==0b0010011) & (func3==0b000) ){
         addi(rd,rs1, imm);
     }
-    else if(opcode==0b1100111 & func3==0b000){
+    else if( (opcode==0b1100111) & (func3==0b000) ){
         jalr(rd,rs1, imm);
     }
-    else if(opcode==0b0000011 & func3==0b010){
+    else if((opcode==0b0000011) & (func3==0b010) ){
         lw(rd, rs1, imm);
     }
-    else if(opcode==0b0000011 & func3==0b100){
+    else if((opcode==0b0000011) & (func3==0b100)){
         lbu(rd, rs1, imm);
     }
 
@@ -271,7 +272,7 @@ void sb(int rs1, int rs2, int imm){
     //     virtual_routines(memory_address, value);
     // }
 
-    int check=check_virtual_memory_access(memory_address, value);
+    check_virtual_memory_access(memory_address, value);
     //if(check==0){
         value=break_binary(registers[rs2], 0,7);
         memory[registers[rs1]+imm]=value;
@@ -284,7 +285,7 @@ void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
     //printf("Memeory addres sw: %d\n", memory_address);
     int value= registers[rs2];
-    int check=check_virtual_memory_access(memory_address, value);
+    check_virtual_memory_access(memory_address, value);
     //if(check==0){
         memory[memory_address]=value;
     //}
@@ -302,7 +303,7 @@ int imm_manipulate_S(int imm1, int imm2){
 }
 
 void type_s(int instruction){
-    int opcode=break_binary2(instruction, 0, 6);
+    //int opcode=break_binary2(instruction, 0, 6);
     int imm1=break_binary2(instruction, 7,11);
     int func3= break_binary2(instruction,12,14);
     int rs1=break_binary2(instruction, 15,19);
@@ -325,7 +326,7 @@ void type_s(int instruction){
     if(func3==0b000){
         sb(rs1, rs2, immediate_num);
     }
-    else if(func3=0b010){
+    else if(func3==0b010){
         sw(rs1,rs2,immediate_num);
     }
 }
@@ -406,7 +407,7 @@ void type_sb(int instruction){
     // int rs1=break_binary(instruction,15,19);
     // int rs2=break_binary(instruction, 20,24);
     // int imm2= break_binary(instruction,25, 31);
-    int opcode=break_binary2(instruction, 0, 6);
+    //int opcode=break_binary2(instruction, 0, 6);
     int imm1=break_binary2(instruction, 7,11);
     int func3= break_binary2(instruction,12,14);
     int rs1=break_binary2(instruction, 15,19);
@@ -444,7 +445,7 @@ void type_sb(int instruction){
     else if(func3==0b001){
         blt(rs1,rs2,immediate_num);
     }
-    else if(func3=0b101){
+    else if(func3==0b101){
         bge(rs1, rs2, immediate_num);
     }
 
@@ -497,7 +498,7 @@ int imm_manipulate_UJ(int imm){
 }
 
 void type_uj(int instruction){
-    int opcode= break_binary2(instruction, 0, 6);
+    //int opcode= break_binary2(instruction, 0, 6);
     int rd=break_binary2(instruction,7,11);
     int imm=break_binary2(instruction, 12, 31);
     imm= imm_manipulate_UJ(imm);
@@ -575,7 +576,7 @@ int main(int argc, char ** argv){
     int instruction[4*512];
     fread(&instruction, 4, 512, fle);
     fclose(fle);
-    int x=0;
+
     for(int i=0; i<256; i++){
         instruction_memory[i]=instruction[i];
         memory[i]=instruction[i];
