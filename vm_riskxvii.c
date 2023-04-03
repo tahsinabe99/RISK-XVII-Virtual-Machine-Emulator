@@ -80,17 +80,17 @@ void virtual_routines(int memory_address, int stored_value){
     if(memory_address==0x800){
         //printf("console write character\n");
         memory[0x800]=stored_value;
-        printf("%c\n",(char) memory[0x800]);
+        printf("%c",(char) memory[0x800]);
     }
     else if(memory_address==0x804){
-        printf("%d\n", stored_value);
+        printf("%d", stored_value);
         
     }
     else if(memory_address==0x808){
-        printf("%08x\n", stored_value);
+        printf("%08x", stored_value);
     }
     else if(memory_address==0x080c){
-        printf("CPU Halt requested\n");
+        printf("CPU Halt Requested\n");
         exit(0);
     }
     else if(memory_address==0x812){
@@ -104,7 +104,7 @@ void virtual_routines(int memory_address, int stored_value){
         memory[0x816]=scanned_int;
     }
     else if(memory_address==0x820){
-        printf("%08x\n", pc);
+        printf("%08x", pc);
     }
     else if(memory_address==0x824){
         printf("memory 824 called\n");
