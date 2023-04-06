@@ -3,7 +3,7 @@
 #include <string.h>
 int registers[32]={0};
 int memory[2303];
-int instruction_memory[256]={0};
+//int instruction_memory[256]={0};
 int pc=0;
 
 
@@ -660,30 +660,22 @@ int main(int argc, char ** argv){
         return 3;
     }
 
-    int instruction[4*512];
-    fread(&instruction, 4, 512, fle);
+    int instruction[1024];
+    fread(&instruction, 4, 256, fle);
     fclose(fle);
 
     for(int i=0; i<256; i++){
-        instruction_memory[i]=instruction[i];
+       // instruction_memory[i]=instruction[i];
         memory[i]=instruction[i];
     }
     
 
     while(1){
         registers[0]=0;
-        carry_instruction(instruction_memory[pc/4]);
-        registers[0]=0;
-        
-        
-        
+        carry_instruction(memory[pc/4]);
+        registers[0]=0;        
     }
     
-    
-    
-
-
     return 0;
-
 }
 
