@@ -3,7 +3,6 @@
 #include <string.h>
 int registers[32]={0};
 int memory[2303];
-//int instruction_memory[256]={0};
 int pc=0;
 
 
@@ -183,6 +182,21 @@ void sll(int rd, int rs1, int rs2){
     pc=pc+4;
 }
 
+void srl(int rd, int rs1, int rs2){
+    if(rd!=0){
+        registers[rd]=registers[rs1] >> registers[rs2];
+    }
+    pc=pc+4;
+}
+
+// void sra(int rd, int rs1, int rs2){
+//     if(rd!=0){
+//         registers[rd]=registers[rs1] >> registers[rs2];
+//     }
+//     pc=pc+4;
+// }
+
+
 void type_r( int instruction){
     int opcode=break_binary2(instruction, 0,6);
     int rd=break_binary(instruction,7,11);
@@ -208,6 +222,9 @@ void type_r( int instruction){
     }
     else if( (func3==001) & (func7==0b0000000) & (opcode==0b0110011)){
         sll(rd,rs1,rs2);
+    }
+    else if( (func3==101) & (func7==0b0000000) & (opcode==0b0110011)){
+        srl(rd,rs1,rs2);
     }
     
 }
@@ -660,14 +677,14 @@ int main(int argc, char ** argv){
         return 3;
     }
 
-    int instruction[1024];
-    fread(&instruction, 4, 256, fle);
+    //int instruction[1024];
+    fread(memory, 4, 256, fle);
     fclose(fle);
 
-    for(int i=0; i<256; i++){
-       // instruction_memory[i]=instruction[i];
-        memory[i]=instruction[i];
-    }
+    // for(int i=0; i<256; i++){
+    //    // instruction_memory[i]=instruction[i];
+    //     memory[i]=instruction[i];
+    // }
     
 
     while(1){
