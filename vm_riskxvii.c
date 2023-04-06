@@ -189,21 +189,25 @@ void srl(int rd, int rs1, int rs2){
     pc=pc+4;
 }
 
-// void sra(int rd, int rs1, int rs2){
-//     if(rd!=0){
-//         registers[rd]=registers[rs1] >> registers[rs2];
-//     }
-//     pc=pc+4;
-// }
+void sra(int rd, int rs1, int rs2){
+    if(rd!=0){
+        int right_most_bits= break_binary2(registers[rs1],0,(registers[rs2]-1));
+        right_most_bits= right_most_bits << 32-registers[rs2];
+        registers[rd]=registers[rs1] >> registers[rs2];
+        registers[rd] =registers[rd] | right_most_bits;
+    }
+    pc=pc+4;
+    
+}
 
 
 void type_r( int instruction){
     int opcode=break_binary2(instruction, 0,6);
-    int rd=break_binary(instruction,7,11);
-    int func3=break_binary(instruction, 12, 14);
-    int rs1=break_binary(instruction, 15,19);
-    int rs2=break_binary(instruction, 20, 24);
-    int func7=break_binary(instruction, 25,31);
+    int rd=break_binary2(instruction,7,11);
+    int func3=break_binary2(instruction, 12, 14);
+    int rs1=break_binary2(instruction, 15,19);
+    int rs2=break_binary2(instruction, 20, 24);
+    int func7=break_binary2(instruction, 25,31);
 
     if( (func3==0b000) & (func7==0b0000000) ){
         add(rd, rs1, rs2);
@@ -223,10 +227,12 @@ void type_r( int instruction){
     else if( (func3==001) & (func7==0b0000000) & (opcode==0b0110011)){
         sll(rd,rs1,rs2);
     }
-    else if( (func3==101) & (func7==0b0000000) & (opcode==0b0110011)){
+    else if( (func3==0b101) & (func7==0b0000000) & (opcode==0b0110011)){
         srl(rd,rs1,rs2);
     }
-    
+    else if( (func3==0b101) & (func7==0b0100000) & (opcode==0b0110011) ){
+        sra(rd,rs1,rs2);
+    }
 }
 
 
@@ -290,7 +296,7 @@ void lbu(int rd, int rs1, int imm){
     //printf("before memory address lbu %08x\n", memory_address);
     check_virtual_memory_access(memory_address, value);
     if(rd!=0){
-        if(memory_address>=0x00 && memory_address<0x3ff){
+        if( (memory_address>=0x00) && (memory_address<0x3ff) ){
             int bit_start=instruction_memory_access(memory_address);
             value=memory[memory_address/4];
             value=break_binary2(value, bit_start, (bit_start+7));
@@ -362,31 +368,25 @@ void sb(int rs1, int rs2, int imm){
 
     //to be continued from here
     int memory_address= registers[rs1]+imm;
-    //printf("This is memory: %d & rs2: %08x, rs1: %d and value: %d\n", memory_address,  registers[rs2], registers[rs1], value);
-    //previously used and it works for printing h;
-    // if(memory_address>=0x800 & memory_address<=0x8ff){
-        
-    //     virtual_routines(memory_address, value);
-    // }
-
-    check_virtual_memory_access(memory_address, value);
-    //if(check==0){
+    
+    if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
+        check_virtual_memory_access(memory_address, value);
         value=break_binary(registers[rs2], 0,7);
         memory[registers[rs1]+imm]=value;
-    //}
-
+    }
+    
     pc=pc+4;
 }
 
 void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
-    //printf("Memeory addres sw: %d\n", memory_address);
-    int value= registers[rs2];
-    check_virtual_memory_access(memory_address, value);
-    //if(check==0){
+    if(!( (memory_address>=0x00) && (memory_address<=0x3ff)) ){
+        int value= registers[rs2];
+        check_virtual_memory_access(memory_address, value);
         memory[memory_address]=value;
-    //}
-
+    }
+    //printf("Memeory addres sw: %d\n", memory_address);
+    
     pc=pc+4;
 }
 
@@ -580,7 +580,10 @@ void type_u( int instruction){
 //uj starts
 
 void jal(int rd, int imm){
-    registers[rd]=pc+4;
+    if(rd!=0){
+        registers[rd]=pc+4;
+    }
+    
     //printf("%d: rd(%d)= %d+4; ", pc, rd, pc);
     pc=pc+(imm);
     //printf("  after Pc=%d \n", pc);
@@ -695,4 +698,3 @@ int main(int argc, char ** argv){
     
     return 0;
 }
-
