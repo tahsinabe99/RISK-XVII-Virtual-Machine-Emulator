@@ -192,7 +192,7 @@ void srl(int rd, int rs1, int rs2){
 void sra(int rd, int rs1, int rs2){
     if(rd!=0){
         int right_most_bits= break_binary2(registers[rs1],0,(registers[rs2]-1));
-        right_most_bits= right_most_bits << 32-registers[rs2];
+        right_most_bits= right_most_bits << (32-registers[rs2]);
         registers[rd]=registers[rs1] >> registers[rs2];
         registers[rd] =registers[rd] | right_most_bits;
     }
