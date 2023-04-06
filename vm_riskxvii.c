@@ -143,10 +143,38 @@ int instruction_memory_access(int x){
 void add(int rd, int rs1, int rs2){
     if(rd!=0b00){
         registers[rd]= registers[rs1]+registers[rs2];
-        //printf("add done with  R[%d]=R[%d]+R[%d] \n R[%d]=%d\n", rd, rs1, rs2, rd, (registers[rs1]+registers[rs2]));
     }
     pc=pc+4;
 }
+
+void sub(int rd, int rs1, int rs2){
+    if(rd!=0b00){
+        registers[rd]= registers[rs1]-registers[rs2];
+    }
+    pc=pc+4;
+}
+
+void xor(int rd, int rs1, int rs2){
+    if(rd!=0b00){
+        registers[rd]= registers[rs1]^registers[rs2];
+    }
+    pc=pc+4;
+}
+
+void or(int rd, int rs1, int rs2){
+    if(rd!=0b00){
+        registers[rd]= registers[rs1] | registers[rs2];
+    }
+    pc=pc+4;
+}
+
+void and(int rd, int rs1, int rs2){
+    if(rd!=0b00){
+        registers[rd]= registers[rs1] & registers[rs2];
+    }
+    pc=pc+4;
+}
+
 
 void sll(int rd, int rs1, int rs2){
     if(rd!=0){
@@ -166,9 +194,22 @@ void type_r( int instruction){
     if( (func3==0b000) & (func7==0b0000000) ){
         add(rd, rs1, rs2);
     }
+    else if( (opcode==0b0110011) & (func3==0b000) & (func7=0b0100000) ){
+        sub(rd,rs1,rs2);
+    }
+    else if( (opcode==0b0110011) & (func3==0b100) & (func7=0b0000000) ){
+        xor(rd,rs1,rs2);
+    }
+    else if( (opcode==0b0110011) & (func3==0b110) & (func7=0b0000000) ){
+        or(rd,rs1,rs2);
+    }
+    else if( (opcode==0b0110011) & (func3==0b111) & (func7=0b0000000) ){
+        and(rd,rs1,rs2);
+    }
     else if( (func3==001) & (func7==0b0000000) & (opcode==0b0110011)){
         sll(rd,rs1,rs2);
     }
+    
 }
 
 
@@ -178,10 +219,29 @@ void addi(int rd, int rs1, int imm){
     if(rd!=0b00000){
         registers[rd]=registers[rs1]+imm;
     }
-    //printf("%d: rd(%d) = rs1(%d)+ %d= %d\n\n", pc,rd, rs1, imm, registers[rd]);
     pc=pc+4;
 }
 
+void xori(int rd, int rs1, int imm){
+    if(rd!=0b00000){
+        registers[rd]=registers[rs1]^imm;
+    }
+    pc=pc+4;
+}
+
+void ori(int rd, int rs1, int imm){
+    if(rd!=0b00000){
+        registers[rd]=registers[rs1] | imm;
+    }
+    pc=pc+4;
+}
+
+void andi(int rd, int rs1, int imm){
+    if(rd!=0b00000){
+        registers[rd]=registers[rs1] & imm;
+    }
+    pc=pc+4;
+}
 
 void jalr(int rd, int rs1, int imm){
     if(rd!=0b00000){
@@ -220,16 +280,10 @@ void lbu(int rd, int rs1, int imm){
         }
         else{
             value=memory[memory_address];
-        //printf("LBU Memoery address: %08x and value %d\n",memory_address, value);
             value=break_binary2(value, 0, 7);
         }
         
-        // int register_value=registers[rd];
-        // register_value=register_value >>8;
-        // register_value=register_value << 8 | value;
-       // displayBits(value);
         registers[rd]=value;
-        //printf("register[%d]=");
     }
     pc=pc+4;
 
@@ -268,6 +322,15 @@ void type_i( int instruction){
     }
     else if((opcode==0b0000011) & (func3==0b100)){
         lbu(rd, rs1, imm);
+    }
+    else if((opcode==0b0010011) & (func3==0b100)){
+        xori(rd, rs1, imm);
+    }
+    else if((opcode==0b0010011) & (func3==0b110)){
+        ori(rd, rs1, imm);
+    }
+    else if((opcode==0b0010011) & (func3==0b111)){
+        andi(rd, rs1, imm);
     }
 
 }
@@ -474,11 +537,9 @@ void lui(int rd, int imm){
     if(rd!=0b00000){
         int value=imm;
         value=value << 12;
-        registers[rd]= value;
-        //printf("%d: rd(%d)=%d   lui \n", pc, rd, registers[rd]);
-        pc=pc+4;
-        
+        registers[rd]= value;        
     }
+    pc=pc+4;
 }
 
 
@@ -486,6 +547,15 @@ void type_u( int instruction){
     int rd=break_binary(instruction,7,11);
     int imm=break_binary(instruction, 12, 31);
     
+    if(instruction<0){
+        int immediate_num=modifyBit(imm, 20, 1);
+        int bitmask=0b0;
+        bitmask=~bitmask;
+        bitmask=bitmask<<11;
+        immediate_num=bitmask | immediate_num;
+        imm=immediate_num;
+    }
+
     lui(rd,imm);
 }
 
