@@ -128,6 +128,16 @@ int check_virtual_memory_access(int memory_address, int value){
     }
 }
 
+//this function helps to get 8 bits from instruction memory 
+//instruction is stored as int in int array
+//to access which byte of instruction memory, we use this 
+int instruction_memory_access(int x){
+    int instruction_no=x/4; //not pc value
+    int instruction_pc_no=instruction_no*4;
+    int diff= x-instruction_pc_no;
+    return (diff*8);
+}
+
 //type r starts
 
 void add(int rd, int rs1, int rs2){
@@ -139,7 +149,9 @@ void add(int rd, int rs1, int rs2){
 }
 
 void sll(int rd, int rs1, int rs2){
-    registers[rd]=registers[rs1] << registers[rs2];
+    if(rd!=0){
+        registers[rd]=registers[rs1] << registers[rs2];
+    }
     pc=pc+4;
 }
 
@@ -202,11 +214,16 @@ void lbu(int rd, int rs1, int imm){
     check_virtual_memory_access(memory_address, value);
     if(rd!=0){
         if(memory_address>=0x00 && memory_address<0x3ff){
-            memory_address=memory_address/4;
+            int bit_start=instruction_memory_access(memory_address);
+            value=memory[memory_address/4];
+            value=break_binary2(value, bit_start, (bit_start+7));
         }
-        value=memory[memory_address];
+        else{
+            value=memory[memory_address];
         //printf("LBU Memoery address: %08x and value %d\n",memory_address, value);
-        value=break_binary2(value, 0, 7);
+            value=break_binary2(value, 0, 7);
+        }
+        
         // int register_value=registers[rd];
         // register_value=register_value >>8;
         // register_value=register_value << 8 | value;
