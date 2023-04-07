@@ -302,7 +302,7 @@ void lw(int rd, int rs1, int imm){
     int value= memory[memory_address];
     //printf("LW Memoery address: %08x\n",memory_address);
     //come back
-    check_virtual_memory_access(memory_address, value);
+    //check_virtual_memory_access(memory_address, value);
     if(rd!=0){
         if( (memory_address>=0x00) && (memory_address<0x3ff) ){
             value=memory[memory_address/4];
@@ -310,6 +310,8 @@ void lw(int rd, int rs1, int imm){
         else{
             value=memory[memory_address];
         }
+
+        check_virtual_memory_access(memory_address, value);
         registers[rd]=memory[registers[rs1]+imm];
     }
 
@@ -322,7 +324,7 @@ void lbu(int rd, int rs1, int imm){
     int memory_address=registers[rs1]+imm;
     int value= memory[memory_address];
     //printf("before memory address lbu %08x\n", memory_address);
-    check_virtual_memory_access(memory_address, value);
+    //check_virtual_memory_access(memory_address, value);
     if(rd!=0){
         if( (memory_address>=0x00) && (memory_address<0x3ff) ){
             int bit_start=instruction_memory_access(memory_address);
@@ -334,6 +336,7 @@ void lbu(int rd, int rs1, int imm){
             value=break_binary2(value, 0, 7);
         }
         
+        check_virtual_memory_access(memory_address, value);
         registers[rd]=value;
     }
     pc=pc+4;
@@ -402,8 +405,9 @@ void sb(int rs1, int rs2, int imm){
     
     if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
         //value should be before virtual memory access
-        check_virtual_memory_access(memory_address, value);
+        //check_virtual_memory_access(memory_address, value);
         value=break_binary(registers[rs2], 0,7);
+        check_virtual_memory_access(memory_address, value);
         memory[registers[rs1]+imm]=value;
     }
     //no else statement cuz we dont write to instruction memory.
@@ -419,8 +423,9 @@ void sh(int rs1, int rs2, int imm){
     int memory_address= registers[rs1]+imm;
     
     if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
-        check_virtual_memory_access(memory_address, value);
+        //check_virtual_memory_access(memory_address, value);
         value=break_binary(registers[rs2], 0,15);
+        check_virtual_memory_access(memory_address, value);
         memory[registers[rs1]+imm]=value;
     }
     //no else statement cuz we dont write to instruction memory.
