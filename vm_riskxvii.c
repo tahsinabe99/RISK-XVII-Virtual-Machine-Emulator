@@ -135,7 +135,7 @@ void virtual_routines(int memory_address, int stored_value){
 //return 0 if the memory is not accessed
 //returns 1, if memory is accessed and carries on virtual routine
 int check_virtual_memory_access(int memory_address, int value){
-    if((memory_address==0x800 )| (memory_address==0x804) | (memory_address==0x808) | (memory_address==0x80C) | (memory_address==0x812) | (memory_address==0x816) |  (memory_address==0x820) | (memory_address==0x824) | (memory_address==0x828) ){
+    if((memory_address==0x800 )|| (memory_address==0x804) || (memory_address==0x808) || (memory_address==0x80C) || (memory_address==0x812) || (memory_address==0x816) ||  (memory_address==0x820) || (memory_address==0x824) || (memory_address==0x828) ){
         //printf("MEMEORY ACCCESSED!!: %08x\n", memory_address);
         virtual_routines(memory_address, value);
         return 1;
@@ -237,31 +237,31 @@ void type_r( int instruction){
     int rs2=break_binary2(instruction, 20, 24);
     int func7=break_binary2(instruction, 25,31);
 
-    if( (func3==0b000) & (func7==0b0000000) ){
+    if( (func3==0b000) && (func7==0b0000000) ){
         add(rd, rs1, rs2);
     }
-    else if(  (func3==0b000) & (func7==0b0100000) ){
+    else if(  (func3==0b000) && (func7==0b0100000) ){
         sub(rd,rs1,rs2);
     }
-    else if( (func3==0b100) & (func7==0b0000000) ){
+    else if( (func3==0b100) && (func7==0b0000000) ){
         xor(rd,rs1,rs2);
     }
-    else if( (func3==0b110) & (func7==0b0000000) ){
+    else if( (func3==0b110) && (func7==0b0000000) ){
         or(rd,rs1,rs2);
     }
-    else if( (func3==0b111) & (func7==0b0000000) ){
+    else if( (func3==0b111) && (func7==0b0000000) ){
         and(rd,rs1,rs2);
     }
-    else if( (func3==001) & (func7==0b0000000) ){
+    else if( (func3==001) && (func7==0b0000000) ){
         sll(rd,rs1,rs2);
     }
-    else if( (func3==0b101) & (func7==0b0000000) ){
+    else if( (func3==0b101) && (func7==0b0000000) ){
         srl(rd,rs1,rs2);
     }
-    else if( (func3==0b101) & (func7==0b0100000) ){
+    else if( (func3==0b101) && (func7==0b0100000) ){
         sra(rd,rs1,rs2);
     }
-    else if( (func3==0b010) & (func7==0b0000000) ){
+    else if( (func3==0b010) && (func7==0b0000000) ){
         slt(rd,rs1,rs2);
     }
     else{
@@ -386,28 +386,28 @@ void type_i( int instruction){
          imm=immediate_num;
     }    
 
-    if( (opcode==0b0010011) & (func3==0b000) ){
+    if( (opcode==0b0010011) && (func3==0b000) ){
         addi(rd,rs1, imm);
     }
-    else if( (opcode==0b1100111) & (func3==0b000) ){
+    else if( (opcode==0b1100111) && (func3==0b000) ){
         jalr(rd,rs1, imm);
     }
-    else if((opcode==0b0000011) & (func3==0b010) ){
+    else if((opcode==0b0000011) && (func3==0b010) ){
         lw(rd, rs1, imm);
     }
-    else if((opcode==0b0000011) & (func3==0b100)){
+    else if((opcode==0b0000011) && (func3==0b100)){
         lbu(rd, rs1, imm);
     }
-    else if((opcode==0b0010011) & (func3==0b100)){
+    else if((opcode==0b0010011) && (func3==0b100)){
         xori(rd, rs1, imm);
     }
-    else if((opcode==0b0010011) & (func3==0b110)){
+    else if((opcode==0b0010011) && (func3==0b110)){
         ori(rd, rs1, imm);
     }
-    else if((opcode==0b0010011) & (func3==0b111)){
+    else if((opcode==0b0010011) && (func3==0b111)){
         andi(rd, rs1, imm);
     }
-    else if((opcode==0b0010011) & (func3==0b010)){
+    else if((opcode==0b0010011) && (func3==0b010)){
         slti(rd, rs1, imm);
     }
     else{
@@ -459,6 +459,9 @@ void sh(int rs1, int rs2, int imm){
 
 void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
+    if(memory_address<=0 || memory_address>2303){
+        printf("memory address: %d, rs1:%d imm:%d\n", memory_address, registers[rs1], imm);
+    }
     if(!( (memory_address>=0x00) && (memory_address<=0x3ff)) ){
         int value= registers[rs2];
         check_virtual_memory_access(memory_address, value);
