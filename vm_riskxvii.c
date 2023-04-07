@@ -240,16 +240,16 @@ void type_r( int instruction){
     if( (func3==0b000) & (func7==0b0000000) ){
         add(rd, rs1, rs2);
     }
-    else if(  (func3==0b000) & (func7=0b0100000) ){
+    else if(  (func3==0b000) & (func7==0b0100000) ){
         sub(rd,rs1,rs2);
     }
-    else if( (func3==0b100) & (func7=0b0000000) ){
+    else if( (func3==0b100) & (func7==0b0000000) ){
         xor(rd,rs1,rs2);
     }
-    else if( (func3==0b110) & (func7=0b0000000) ){
+    else if( (func3==0b110) & (func7==0b0000000) ){
         or(rd,rs1,rs2);
     }
-    else if( (func3==0b111) & (func7=0b0000000) ){
+    else if( (func3==0b111) & (func7==0b0000000) ){
         and(rd,rs1,rs2);
     }
     else if( (func3==001) & (func7==0b0000000) ){
