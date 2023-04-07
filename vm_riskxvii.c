@@ -87,7 +87,6 @@ int opcode_type_check(int opcode){
     else if(opcode==0b1101111){return 6;}
     else if(opcode==0b1100111){return 2;}
     else if(opcode==0b0000011){return 2;}
-    else if(opcode==0b0110011){return 1;}
     return -1;
 }
 
@@ -231,7 +230,7 @@ void slt(int rd, int rs1, int rs2){
 
 
 void type_r( int instruction){
-    int opcode=break_binary2(instruction, 0,6);
+    //int opcode=break_binary2(instruction, 0,6);
     int rd=break_binary2(instruction,7,11);
     int func3=break_binary2(instruction, 12, 14);
     int rs1=break_binary2(instruction, 15,19);
@@ -241,28 +240,28 @@ void type_r( int instruction){
     if( (func3==0b000) & (func7==0b0000000) ){
         add(rd, rs1, rs2);
     }
-    else if( (opcode==0b0110011) & (func3==0b000) & (func7=0b0100000) ){
+    else if(  (func3==0b000) & (func7=0b0100000) ){
         sub(rd,rs1,rs2);
     }
-    else if( (opcode==0b0110011) & (func3==0b100) & (func7=0b0000000) ){
+    else if(  (func3==0b100) & (func7=0b0000000) ){
         xor(rd,rs1,rs2);
     }
-    else if( (opcode==0b0110011) & (func3==0b110) & (func7=0b0000000) ){
+    else if( (func3==0b110) & (func7=0b0000000) ){
         or(rd,rs1,rs2);
     }
-    else if( (opcode==0b0110011) & (func3==0b111) & (func7=0b0000000) ){
+    else if( (func3==0b111) & (func7=0b0000000) ){
         and(rd,rs1,rs2);
     }
-    else if( (func3==001) & (func7==0b0000000) & (opcode==0b0110011)){
+    else if( (func3==001) & (func7==0b0000000) ){
         sll(rd,rs1,rs2);
     }
-    else if( (func3==0b101) & (func7==0b0000000) & (opcode==0b0110011)){
+    else if( (func3==0b101) & (func7==0b0000000) ){
         srl(rd,rs1,rs2);
     }
-    else if( (func3==0b101) & (func7==0b0100000) & (opcode==0b0110011) ){
+    else if( (func3==0b101) & (func7==0b0100000) ){
         sra(rd,rs1,rs2);
     }
-    else if( (func3==0b010) & (func7==0b0000000) & (opcode==0b0110011) ){
+    else if( (func3==0b010) & (func7==0b0000000) ){
         slt(rd,rs1,rs2);
     }
     else{
