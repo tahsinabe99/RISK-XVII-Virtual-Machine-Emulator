@@ -72,6 +72,12 @@ int opcode_type_check(int opcode){
     return -1;
 }
 
+void register_dump(){
+    printf("PC = %x;\n", pc);
+    for(int i=0;i<32;i++){
+        printf("R[%d] = %x;\n", i, registers[i]);
+    }
+}
 
 
 //virtual routines
@@ -106,7 +112,7 @@ void virtual_routines(int memory_address, int stored_value){
         printf("%x", pc);
     }
     else if(memory_address==0x824){
-        printf("memory 824 called\n");
+        register_dump();
     }
     else if(memory_address==0x828){
         printf("memory 828 called\n");
