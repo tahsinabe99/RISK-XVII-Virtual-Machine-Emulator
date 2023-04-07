@@ -796,7 +796,7 @@ int main(int argc, char ** argv){
     fclose(fle);
 
     for(int i=0; i<256; i++){
-        printf("0x%08x\n",memory[i]);  
+        printf("0x%08x,\n",memory[i]);  
     }
     exit(0);
 
