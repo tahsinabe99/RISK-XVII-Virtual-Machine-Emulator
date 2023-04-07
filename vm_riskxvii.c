@@ -104,6 +104,9 @@ void virtual_routines(int memory_address, int stored_value){
         
     }
     else if(memory_address==0x808){
+        if(stored_value<0){
+            stored_value=stored_value-stored_value-stored_value;
+        }
         printf("%x", stored_value);
     }
     else if(memory_address==0x080c){
