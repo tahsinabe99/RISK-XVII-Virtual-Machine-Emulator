@@ -56,6 +56,19 @@ int opcode_extract(int instruction){
     //returns first 7 bits // works
 }
 
+void register_dump(){
+    printf("PC = %x;\n", pc);
+    for(int i=0;i<32;i++){
+        printf("R[%d] = %x;\n", i, registers[i]);
+    }
+}
+
+void unknown_instruction(int instruction){
+    printf("Instruction not implemented: %x\n", instruction);
+    register_dump();
+    exit(0);
+}
+
 
 //checks which type of instruction it is 
 //returns the type of instruction 
@@ -72,12 +85,6 @@ int opcode_type_check(int opcode){
     return -1;
 }
 
-void register_dump(){
-    printf("PC = %x;\n", pc);
-    for(int i=0;i<32;i++){
-        printf("R[%d] = %x;\n", i, registers[i]);
-    }
-}
 
 
 //virtual routines
@@ -252,6 +259,9 @@ void type_r( int instruction){
     else if( (func3==0b010) & (func7==0b0000000) & (opcode==0b0110011) ){
         slt(rd,rs1,rs2);
     }
+    else{
+        unknown_instruction(instruction);
+    }
 }
 
 
@@ -395,6 +405,9 @@ void type_i( int instruction){
     else if((opcode==0b0010011) & (func3==0b010)){
         slti(rd, rs1, imm);
     }
+    else{
+        unknown_instruction(instruction);
+    }
 
 }
 
@@ -488,6 +501,9 @@ void type_s(int instruction){
     }
     else if(func3==0b001){
         sh(rs1,rs2,immediate_num);
+    }
+    else{
+        unknown_instruction(instruction);
     }
 }
 
@@ -621,6 +637,9 @@ void type_sb(int instruction){
     else if(func3==0b101){
         bge(rs1, rs2, immediate_num);
     }
+    else{
+        unknown_instruction(instruction);
+    }
 
 }
 
@@ -731,6 +750,9 @@ void carry_instruction(int instruction){
     }
     else if(type==6){
         type_uj(instruction);
+    }
+    else{
+        unknown_instruction(instruction);
     }
 }
 
