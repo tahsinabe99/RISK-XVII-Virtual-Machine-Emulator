@@ -243,7 +243,7 @@ void type_r( int instruction){
     else if(  (func3==0b000) & (func7=0b0100000) ){
         sub(rd,rs1,rs2);
     }
-    else if(  (func3==0b100) & (func7=0b0000000) ){
+    else if( (func3==0b100) & (func7=0b0000000) ){
         xor(rd,rs1,rs2);
     }
     else if( (func3==0b110) & (func7=0b0000000) ){
@@ -795,11 +795,10 @@ int main(int argc, char ** argv){
     fread(memory, 4, 256, fle);
     fclose(fle);
 
-    // for(int i=0; i<256; i++){
-    //    // instruction_memory[i]=instruction[i];
-    //     memory[i]=instruction[i];
-    // }
-    
+    for(int i=0; i<256; i++){
+        printf("%08x\n",memory[i]);  
+    }
+    exit(0);
 
     while(1){
         registers[0]=0;
