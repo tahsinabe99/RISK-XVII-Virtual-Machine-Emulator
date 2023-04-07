@@ -69,6 +69,12 @@ void unknown_instruction(int instruction){
     exit(0);
 }
 
+void illegal_operation(int instruction){
+    printf("Illegal Operation: %x\n", instruction);
+    register_dump();
+    exit(0);
+}
+
 
 //checks which type of instruction it is 
 //returns the type of instruction 
@@ -794,6 +800,13 @@ int main(int argc, char ** argv){
     //    // instruction_memory[i]=instruction[i];
     //     memory[i]=instruction[i];
     // }
+    int pc2=0;
+    for(int i=0; i<256; i++){
+        printf("Instruction: %d ,pc: %d %08x\n",i,pc2,memory[i]);
+        pc2+=4;
+        
+    }
+    exit(0);
     
 
     while(1){
