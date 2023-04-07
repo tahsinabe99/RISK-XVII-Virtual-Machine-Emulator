@@ -461,7 +461,9 @@ void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
     if(memory_address<=0 || memory_address>2303){
         printf("memory address: %d, rs1:%d imm:%d\n", memory_address, registers[rs1], imm);
+        exit(1);
     }
+
     if(!( (memory_address>=0x00) && (memory_address<=0x3ff)) ){
         int value= registers[rs2];
         check_virtual_memory_access(memory_address, value);
