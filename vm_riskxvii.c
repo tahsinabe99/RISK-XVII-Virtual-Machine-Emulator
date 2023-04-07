@@ -520,15 +520,6 @@ void beq(int rs1, int rs2,int imm){
     //printf("beq is done andn pc:%08x\n", pc);
 }
 
-void bgeu(int rs1, int rs2, int imm){
-    if(registers[rs1]>=registers[rs2]){
-        pc=pc+imm;
-        
-    }else{
-        pc=pc+4;
-    }
-    //printf("bgeu is done andn pc:%08x\n", pc);
-}
 
 void bne(int rs1, int rs2,int imm){
     if(registers[rs1]!=registers[rs2]){
@@ -568,6 +559,20 @@ void bltu(int rs1, int rs2,int imm){
         pc=pc+4;
     }
     //printf("blt is done andn pc:%08x\n", pc);
+}
+
+void bgeu(int rs1, int rs2, int imm){
+
+    unsigned r1= (unsigned) (registers[rs1]);
+    unsigned r2= (unsigned) (registers[rs2]);
+
+    if(r1>=r2){
+        pc=pc+imm;
+        
+    }else{
+        pc=pc+4;
+    }
+    //printf("bgeu is done andn pc:%08x\n", pc);
 }
 
 int imm_manipulate_SB(int imm1, int imm2){
@@ -631,12 +636,18 @@ void type_sb(int instruction){
     else if(func3==0b001){
         bne(rs1,rs2,immediate_num);
     }
-    else if(func3==0b001){
+    else if(func3==0b100){
         blt(rs1,rs2,immediate_num);
     }
     else if(func3==0b101){
         bge(rs1, rs2, immediate_num);
     }
+    else if(func3==0b110){
+        bltu(rs1, rs2, immediate_num);
+    }
+    // else if(func3==0b111) {
+    //     bgeu(rs1, rs2, immediate_num);
+    // }
     else{
         unknown_instruction(instruction);
     }
