@@ -197,8 +197,18 @@ void sra(int rd, int rs1, int rs2){
         registers[rd] =registers[rd] | right_most_bits;
     }
     pc=pc+4;
-    
 }
+
+void slt(int rd, int rs1, int rs2){
+    if(registers[rs1] < registers[rs2]){
+        registers[rd]=1;
+    }
+    else{
+        registers[rd]=0;
+    }
+    pc=pc+4;
+}
+
 
 
 void type_r( int instruction){
@@ -232,6 +242,9 @@ void type_r( int instruction){
     }
     else if( (func3==0b101) & (func7==0b0100000) & (opcode==0b0110011) ){
         sra(rd,rs1,rs2);
+    }
+    else if( (func3==0b010) & (func7==0b0000000) & (opcode==0b0110011) ){
+        slt(rd,rs1,rs2);
     }
 }
 
@@ -270,10 +283,19 @@ void jalr(int rd, int rs1, int imm){
     if(rd!=0b00000){
         registers[rd]=pc+4;
     }
-    //printf("jalr rd(%08x)=%08x, rs1(%08x)=%08x, (pc+4)=%08x\n", rd,registers[rd], rs1,registers[rs1], pc+4);
     pc=registers[rs1]+imm;
-    //printf("After pc:%08x\n", pc);
 }  
+
+void slti(int rd, int rs1, int imm){
+    if(registers[rs1] < imm ){
+        registers[rd]=1;
+    }
+    else{
+        registers[rd]=0;
+    }
+    pc=pc+4;
+}
+
 
 void lw(int rd, int rs1, int imm){
     int memory_address=registers[rs1]+imm;
@@ -282,6 +304,12 @@ void lw(int rd, int rs1, int imm){
     //come back
     check_virtual_memory_access(memory_address, value);
     if(rd!=0){
+        if( (memory_address>=0x00) && (memory_address<0x3ff) ){
+            value=memory[memory_address/4];
+        }
+        else{
+            value=memory[memory_address];
+        }
         registers[rd]=memory[registers[rs1]+imm];
     }
 
@@ -355,6 +383,9 @@ void type_i( int instruction){
     else if((opcode==0b0010011) & (func3==0b111)){
         andi(rd, rs1, imm);
     }
+    else if((opcode==0b0010011) & (func3==0b010)){
+        slti(rd, rs1, imm);
+    }
 
 }
 
@@ -364,16 +395,35 @@ void type_i( int instruction){
 //store a 8 bit value to memory from a register
 void sb(int rs1, int rs2, int imm){
     int value= registers[rs2];
-    value=break_binary(value, 0, 8);
+    //value=break_binary(value, 0, 8);
+
+    //to be continued from here
+    int memory_address= registers[rs1]+imm;
+    
+    if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
+        //value should be before virtual memory access
+        check_virtual_memory_access(memory_address, value);
+        value=break_binary(registers[rs2], 0,7);
+        memory[registers[rs1]+imm]=value;
+    }
+    //no else statement cuz we dont write to instruction memory.
+    
+    pc=pc+4;
+}
+
+void sh(int rs1, int rs2, int imm){
+    int value= registers[rs2];
+    //value=break_binary(value, 0, 8);
 
     //to be continued from here
     int memory_address= registers[rs1]+imm;
     
     if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
         check_virtual_memory_access(memory_address, value);
-        value=break_binary(registers[rs2], 0,7);
+        value=break_binary(registers[rs2], 0,15);
         memory[registers[rs1]+imm]=value;
     }
+    //no else statement cuz we dont write to instruction memory.
     
     pc=pc+4;
 }
@@ -385,8 +435,7 @@ void sw(int rs1,int rs2, int imm){
         check_virtual_memory_access(memory_address, value);
         memory[memory_address]=value;
     }
-    //printf("Memeory addres sw: %d\n", memory_address);
-    
+
     pc=pc+4;
 }
 
@@ -425,6 +474,9 @@ void type_s(int instruction){
     }
     else if(func3==0b010){
         sw(rs1,rs2,immediate_num);
+    }
+    else if(func3==0b001){
+        sh(rs1,rs2,immediate_num);
     }
 }
 
@@ -476,6 +528,19 @@ void bge(int rs1, int rs2,int imm){
         pc=pc+4;
     }
     //printf("bne is done andn pc:%08x\n", pc);
+}
+
+void bltu(int rs1, int rs2,int imm){
+    //casting the values to treat them as unsigned.
+    unsigned r1= (unsigned) (registers[rs1]);
+    unsigned r2= (unsigned) (registers[rs2]);
+
+    if(r1<r2){
+        pc=pc+imm;
+    }else{
+        pc=pc+4;
+    }
+    //printf("blt is done andn pc:%08x\n", pc);
 }
 
 int imm_manipulate_SB(int imm1, int imm2){
@@ -582,11 +647,8 @@ void type_u( int instruction){
 void jal(int rd, int imm){
     if(rd!=0){
         registers[rd]=pc+4;
-    }
-    
-    //printf("%d: rd(%d)= %d+4; ", pc, rd, pc);
+    }    
     pc=pc+(imm);
-    //printf("  after Pc=%d \n", pc);
 }
 
 int imm_manipulate_UJ(int imm){
