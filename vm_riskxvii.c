@@ -795,10 +795,10 @@ int main(int argc, char ** argv){
     fread(memory, 4, 256, fle);
     fclose(fle);
 
-    for(int i=0; i<256; i++){
-        printf("0x%08x,\n",memory[i]);  
-    }
-    exit(0);
+    // for(int i=0; i<256; i++){
+    //     printf("0x%08x,\n",memory[i]);  
+    // }
+    // exit(0);
 
     while(1){
         registers[0]=0;
