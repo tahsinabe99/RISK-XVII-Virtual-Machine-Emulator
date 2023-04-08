@@ -94,6 +94,7 @@ int opcode_type_check(int opcode){
 
 //virtual routines
 void virtual_routines(int memory_address, int stored_value){
+    printf("pc: %d\n", pc);//
     if(memory_address==0x800){
         //printf("console write character\n");
         memory[0x800]=stored_value;
@@ -122,7 +123,6 @@ void virtual_routines(int memory_address, int stored_value){
         int scanned_int;
         scanf("%d", &scanned_int);
         memory[0x816]=scanned_int;
-        printf("816 is %d/n", scanned_int);
     }
     else if(memory_address==0x820){
         printf("%x", pc);
