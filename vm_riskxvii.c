@@ -104,9 +104,9 @@ void virtual_routines(int memory_address, int stored_value){
         
     }
     else if(memory_address==0x808){
-        if(stored_value<0){
-            stored_value=stored_value-stored_value-stored_value;
-        }
+        // if(stored_value<0){
+        //     stored_value=stored_value-stored_value-stored_value;
+        // }
         printf("%x", stored_value);
     }
     else if(memory_address==0x080c){
@@ -122,6 +122,7 @@ void virtual_routines(int memory_address, int stored_value){
         int scanned_int;
         scanf("%d", &scanned_int);
         memory[0x816]=scanned_int;
+        printf("816 is %d/n", scanned_int);
     }
     else if(memory_address==0x820){
         printf("%x", pc);
