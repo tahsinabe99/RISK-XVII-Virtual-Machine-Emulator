@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-int registers[32]={0};
+int registers[31]={0};
 int memory[2303];
 int pc=0;
 
@@ -94,7 +94,6 @@ int opcode_type_check(int opcode){
 
 //virtual routines
 void virtual_routines(int memory_address, int stored_value){
-    printf("pc: %d\n", pc);//
     if(memory_address==0x800){
         //printf("console write character\n");
         memory[0x800]=stored_value;
@@ -108,7 +107,8 @@ void virtual_routines(int memory_address, int stored_value){
         // if(stored_value<0){
         //     stored_value=stored_value-stored_value-stored_value;
         // }
-        printf("%x", stored_value);
+        unsigned int value= (unsigned int) stored_value;
+        printf("%x", value);
     }
     else if(memory_address==0x080c){
         printf("CPU Halt Requested\n");
