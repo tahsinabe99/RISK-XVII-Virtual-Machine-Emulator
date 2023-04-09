@@ -464,7 +464,7 @@ void sh(int rs1, int rs2, int imm){
 void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
     if(memory_address<=0 || memory_address>2303){
-        printf("memory address: %d, rs1:%d imm:%d\n", memory_address, registers[rs1], imm);
+        printf("pc:%dmemory address: %d, rs1[%d]:%d imm:%d\n",pc, memory_address,rs1, registers[rs1], imm);
         exit(1);
     }
 
@@ -762,6 +762,7 @@ void carry_instruction(int instruction){
     }
     else if(type==2){
         type_i(instruction);
+        
     }
     else if(type==3){
         type_s(instruction);
@@ -771,10 +772,13 @@ void carry_instruction(int instruction){
     }
     
     else if(type==5){
+        int rd=break_binary2(instruction, 7,11);
         type_u(instruction);
     }
     else if(type==6){
+        int rd=break_binary2(instruction, 7,11);
         type_uj(instruction);
+        //if(rd==21){printf("%d\n", pc);exit(0);}
     }
     else{
         unknown_instruction(instruction);
