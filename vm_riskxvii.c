@@ -772,13 +772,10 @@ void carry_instruction(int instruction){
     }
     
     else if(type==5){
-        int rd=break_binary2(instruction, 7,11);
-        type_u(instruction);
+        
     }
     else if(type==6){
-        int rd=break_binary2(instruction, 7,11);
         type_uj(instruction);
-        //if(rd==21){printf("%d\n", pc);exit(0);}
     }
     else{
         unknown_instruction(instruction);
