@@ -25,12 +25,12 @@ void displayBits(unsigned int value){
 
 
 //breaks the binary number from start to end
-int break_binary( int binary_number,  int start, int end){
+// int break_binary( int binary_number,  int start, int end){
     
-     int bit_mask=(1<<(end-start))-1;
-     int broken_binary=(binary_number>>start) & bit_mask;
-    return broken_binary;    
-}
+//      int bit_mask=(1<<(end-start))-1;
+//      int broken_binary=(binary_number>>start) & bit_mask;
+//     return broken_binary;    
+// }
 
 int break_binary2(int instruction, int start, int end){
     int bitmask=((1 << (end-start+1))-1) << start;
@@ -104,9 +104,6 @@ void virtual_routines(int memory_address, int stored_value){
         
     }
     else if(memory_address==0x808){
-        // if(stored_value<0){
-        //     stored_value=stored_value-stored_value-stored_value;
-        // }
         unsigned int value= (unsigned int) stored_value;
         printf("%x", value);
     }
@@ -131,7 +128,8 @@ void virtual_routines(int memory_address, int stored_value){
         register_dump();
     }
     else if(memory_address==0x828){
-        printf("memory 828 called\n");
+        unsigned int value= (unsigned int) stored_value;
+        printf("%x", value);
     }
 }
 
@@ -312,12 +310,15 @@ void jalr(int rd, int rs1, int imm){
 }  
 
 void slti(int rd, int rs1, int imm){
-    if(registers[rs1] < imm ){
+    if(rd!=0){
+        if(registers[rs1] < imm){
         registers[rd]=1;
+        }
+        else{
+            registers[rd]=0;
+        }
     }
-    else{
-        registers[rd]=0;
-    }
+    
     pc=pc+4;
 }
 
@@ -426,7 +427,6 @@ void type_i( int instruction){
 //store a 8 bit value to memory from a register
 void sb(int rs1, int rs2, int imm){
     int value= registers[rs2];
-    //value=break_binary(value, 0, 8);
 
     //to be continued from here
     int memory_address= registers[rs1]+imm;
@@ -434,7 +434,7 @@ void sb(int rs1, int rs2, int imm){
     if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
         //value should be before virtual memory access
         //check_virtual_memory_access(memory_address, value);
-        value=break_binary(registers[rs2], 0,7);
+        value=break_binary2(registers[rs2], 0,7);
         check_virtual_memory_access(memory_address, value);
         memory[registers[rs1]+imm]=value;
     }
@@ -452,7 +452,7 @@ void sh(int rs1, int rs2, int imm){
     
     if( !( (memory_address>=0x00) && (memory_address<0x3ff) )){
         //check_virtual_memory_access(memory_address, value);
-        value=break_binary(registers[rs2], 0,15);
+        value=break_binary2(registers[rs2], 0,15);
         check_virtual_memory_access(memory_address, value);
         memory[registers[rs1]+imm]=value;
     }
@@ -464,7 +464,7 @@ void sh(int rs1, int rs2, int imm){
 void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
     if(memory_address<=0 || memory_address>2303){
-        printf("memory address: %d, rs1:%d imm:%d\n", memory_address, registers[rs1], imm);
+        printf("memory address: %d, rs1[%d]=%d imm:%d\n", memory_address,rs1, registers[rs1], imm);
         exit(1);
     }
 
@@ -479,7 +479,6 @@ void sw(int rs1,int rs2, int imm){
 
 int imm_manipulate_S(int imm1, int imm2){
     int immediate_num= imm2 << 5; //| imm1; 
-    //displayBits(immediate_num);
     immediate_num=immediate_num | imm1;
     //printf("this is stype imm:%08x\n", immediate_num);
     //displayBits(immediate_num);
@@ -608,27 +607,12 @@ int imm_manipulate_SB(int imm1, int imm2){
 }
 
 void type_sb(int instruction){
-     //displayBits(instruction);
-    // int opcode=opcode_extract(instruction); //break_binary(instruction, 0, 6);
-    // int imm1= break_binary(instruction,7,11);
-    // int func3=break_binary(instruction,12,14);
-    // int rs1=break_binary(instruction,15,19);
-    // int rs2=break_binary(instruction, 20,24);
-    // int imm2= break_binary(instruction,25, 31);
-    //int opcode=break_binary2(instruction, 0, 6);
     int imm1=break_binary2(instruction, 7,11);
     int func3= break_binary2(instruction,12,14);
     int rs1=break_binary2(instruction, 15,19);
     int rs2=break_binary2(instruction,20,24);
     int imm2=break_binary2(instruction, 25,31);
-    //printf("SB imm1:%d and SB imm2:%d\n", imm1, imm2);
-
-    // displayBits(opcode);
-    // displayBits(imm1);
-    // displayBits(func3);
-    // displayBits(rs1);
-    // displayBits(rs2);
-    // displayBits(imm2);
+ 
     int immediate_num=imm_manipulate_SB(imm1, imm2);
     if(instruction<0){
         immediate_num=modifyBit(immediate_num, 12, 1);
@@ -681,8 +665,8 @@ void lui(int rd, int imm){
 
 
 void type_u( int instruction){
-    int rd=break_binary(instruction,7,11);
-    int imm=break_binary(instruction, 12, 31);
+    int rd=break_binary2(instruction,7,11);
+    int imm=break_binary2(instruction, 12, 31);
     
     if(instruction<0){
         int immediate_num=modifyBit(imm, 20, 1);
