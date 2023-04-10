@@ -57,20 +57,20 @@ int opcode_extract(int instruction){
 }
 
 void register_dump(){
-    printf("PC = %08x;\n", pc);
+    printf("PC = 0x%08x;\n", pc);
     for(int i=0;i<32;i++){
-        printf("R[%d] = %08x;\n", i, registers[i]);
+        printf("R[%d] = 0x%08x;\n", i, registers[i]);
     }
 }
 
 void unknown_instruction(int instruction){
-    printf("Instruction Not Implemented: %x\n", instruction);
+    printf("Instruction Not Implemented: 0x%08x\n", instruction);
     register_dump();
     exit(0);
 }
 
 void illegal_operation(int instruction){
-    printf("Illegal Operation: %x\n", instruction);
+    printf("Illegal Operation: 0x%08x\n", instruction);
     register_dump();
     exit(0);
 }
