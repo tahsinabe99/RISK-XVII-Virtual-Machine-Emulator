@@ -131,13 +131,17 @@ void virtual_routines(int memory_address, int stored_value){
         unsigned int value= (unsigned int) stored_value;
         printf("%x", value);
     }
+
+    else if(memory_address==0x834){
+        illegal_operation(memory[pc/4]);
+    }
 }
 
 //checks if specific memory is accessed to trigger virtual routine
 //return 0 if the memory is not accessed
 //returns 1, if memory is accessed and carries on virtual routine
 int check_virtual_memory_access(int memory_address, int value){
-    if((memory_address==0x800 )|| (memory_address==0x804) || (memory_address==0x808) || (memory_address==0x80C) || (memory_address==0x812) || (memory_address==0x816) ||  (memory_address==0x820) || (memory_address==0x824) || (memory_address==0x828) ){
+    if((memory_address==0x800 )|| (memory_address==0x804) || (memory_address==0x808) || (memory_address==0x80C) || (memory_address==0x812) || (memory_address==0x816) ||  (memory_address==0x820) || (memory_address==0x824) || (memory_address==0x828) || (memory_address==0x834) ){
         //printf("MEMEORY ACCCESSED!!: %08x\n", memory_address);
         virtual_routines(memory_address, value);
         return 1;
