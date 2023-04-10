@@ -90,7 +90,9 @@ int opcode_type_check(int opcode){
     return -1;
 }
 
-
+void heap_banks(){
+    illegal_operation(memory[pc/4]);
+}
 
 //virtual routines
 void virtual_routines(int memory_address, int stored_value){
@@ -467,6 +469,9 @@ void sh(int rs1, int rs2, int imm){
 
 void sw(int rs1,int rs2, int imm){
     int memory_address=registers[rs1]+imm;
+    if(memory_address>=0xb700 && memory_address<=0xd700){
+        heap_banks();
+    }
     if(memory_address<=0 || memory_address>2303){
         printf("memory address: %d, rs1[%d]=%d imm:%d\n", memory_address,rs1, registers[rs1], imm);
         exit(1);
