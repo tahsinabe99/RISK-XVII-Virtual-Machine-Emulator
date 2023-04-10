@@ -57,14 +57,14 @@ int opcode_extract(int instruction){
 }
 
 void register_dump(){
-    printf("PC = %x;\n", pc);
+    printf("PC = %08x;\n", pc);
     for(int i=0;i<32;i++){
-        printf("R[%d] = %x;\n", i, registers[i]);
+        printf("R[%d] = %08x;\n", i, registers[i]);
     }
 }
 
 void unknown_instruction(int instruction){
-    printf("Instruction not implemented: %x\n", instruction);
+    printf("Instruction Not Implemented: %x\n", instruction);
     register_dump();
     exit(0);
 }
