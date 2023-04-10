@@ -352,7 +352,7 @@ void lbu(int rd, int rs1, int imm){
     //printf("before memory address lbu %08x\n", memory_address);
     //check_virtual_memory_access(memory_address, value);
     if(rd!=0){
-        if( (memory_address>=0x00) && (memory_address<0x3ff) ){
+        if( (memory_address>=0x00) && (memory_address<0x7ff) ){
             int bit_start=instruction_memory_access(memory_address);
             value=memory[memory_address/4];
             value=break_binary2(value, bit_start, (bit_start+7));
