@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-unsigned registers[31]={0};
+unsigned registers[32]={0};
 int memory[2303];
 int pc=0;
 
