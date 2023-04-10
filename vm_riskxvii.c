@@ -785,7 +785,7 @@ int main(int argc, char ** argv){
     }
 
     //int instruction[1024];
-    fread(memory, 4, 256, fle);
+    fread(memory, 4, 512, fle);
     fclose(fle);
 
     // for(int i=0; i<256; i++){
