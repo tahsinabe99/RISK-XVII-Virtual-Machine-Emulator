@@ -24,14 +24,6 @@ void displayBits(unsigned int value){
 }
 
 
-//breaks the binary number from start to end
-// int break_binary( int binary_number,  int start, int end){
-    
-//      int bit_mask=(1<<(end-start))-1;
-//      int broken_binary=(binary_number>>start) & bit_mask;
-//     return broken_binary;    
-// }
-
 int break_binary2(int instruction, int start, int end){
     int bitmask=((1 << (end-start+1))-1) << start;
     int broken_binary= (instruction & bitmask) >> start;
@@ -49,12 +41,12 @@ int modifyBit(int binary_number, int position, int bit){
 //we extract the first 7 bits of the binary number to check the opcode
 //we make a bitmask which shifts 1 7 bits to the left, thenw e subtract 1 to it
 // we use it to mask the first 7 bits 
-int opcode_extract(int instruction){
-    int bitmask= (1<<7)-1;
-    int to_return= instruction & bitmask;
-    return to_return;
-    //returns first 7 bits // works
-}
+// int opcode_extract(int instruction){
+//     int bitmask= (1<<7)-1;
+//     int to_return= instruction & bitmask;
+//     return to_return;
+//     //returns first 7 bits // works
+// }
 
 void register_dump(){
     printf("PC = 0x%08x;\n", pc);
@@ -238,7 +230,6 @@ void slt(int rd, int rs1, int rs2){
 
 
 void type_r( int instruction){
-    //int opcode=break_binary2(instruction, 0,6);
     int rd=break_binary2(instruction,7,11);
     int func3=break_binary2(instruction, 12, 14);
     int rs1=break_binary2(instruction, 15,19);
@@ -332,9 +323,7 @@ void slti(int rd, int rs1, int imm){
 void lw(int rd, int rs1, int imm){
     int memory_address=registers[rs1]+imm;
     int value= memory[memory_address];
-    //printf("LW Memoery address: %08x\n",memory_address);
-    //come back
-    //check_virtual_memory_access(memory_address, value);
+
     if(rd!=0){
         if( (memory_address>=0x00) && (memory_address<0x3ff) ){
             value=memory[memory_address/4];
@@ -383,12 +372,9 @@ void type_i( int instruction){
     int rs1=break_binary2(instruction, 15,19);
     int imm=break_binary2(instruction, 20, 31);
 
-    //printf("This is imm_i %d\n\n", imm);
     if(instruction<0){
-        //printf("negative type_i\n");
-        //displayBits(imm);
+
         int immediate_num=modifyBit(imm, 12, 1);
-        //displayBits(immediate_num);
         int bitmask=0b0;
         bitmask=~bitmask;
         bitmask=bitmask<<11;
@@ -746,7 +732,7 @@ void type_uj(int instruction){
 
 //carries out the instruction
 void carry_instruction(int instruction){
-    int opcode= opcode_extract(instruction);
+    int opcode= break_binary2(instruction, 0,6);
     int type=opcode_type_check(opcode);
     //printf("This is instruction: %08x,of type: %d\n", instruction, type);
 
