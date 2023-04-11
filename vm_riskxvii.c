@@ -3,25 +3,8 @@
 //#include <string.h>
 unsigned registers[32]={0};
 int memory[2303];
-int pc=0;
+short int pc=0;
 
-
-
-//DELETE LATER
-//to print binary values
-// void displayBits(unsigned int value){
-//     unsigned int displayMask=1 << 31;
-//     printf("%10u=", value);
-
-//     for(unsigned int c=1; c<=32; c++){
-//         putchar(value & displayMask ? '1': '0' );
-//         value <<=1;
-//         if(c% 8==0){
-//             putchar(' ');
-//         }
-//     }
-//     putchar('\n');
-// }
 
 
 int break_binary2(int instruction, int start, int end){
@@ -37,16 +20,6 @@ int modifyBit(int binary_number, int position, int bit){
     return changed_num;
 }
 
-
-//we extract the first 7 bits of the binary number to check the opcode
-//we make a bitmask which shifts 1 7 bits to the left, thenw e subtract 1 to it
-// we use it to mask the first 7 bits 
-// int opcode_extract(int instruction){
-//     int bitmask= (1<<7)-1;
-//     int to_return= instruction & bitmask;
-//     return to_return;
-//     //returns first 7 bits // works
-// }
 
 void register_dump(){
     printf("PC = 0x%08x;\n", pc);
@@ -783,13 +756,8 @@ int main(int argc, char ** argv){
     fread(memory, 4, 512, fle);
     fclose(fle);
 
-    // for(int i=0; i<256; i++){
-    //     printf("0x%08x,\n",memory[i]);  
-    // }
-    // exit(0);
 
     while(1){
-        registers[0]=0;
         carry_instruction(memory[pc/4]);
         registers[0]=0;        
     }
