@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+//#include <string.h>
 unsigned registers[32]={0};
 int memory[2303];
 int pc=0;
@@ -9,19 +9,19 @@ int pc=0;
 
 //DELETE LATER
 //to print binary values
-void displayBits(unsigned int value){
-    unsigned int displayMask=1 << 31;
-    printf("%10u=", value);
+// void displayBits(unsigned int value){
+//     unsigned int displayMask=1 << 31;
+//     printf("%10u=", value);
 
-    for(unsigned int c=1; c<=32; c++){
-        putchar(value & displayMask ? '1': '0' );
-        value <<=1;
-        if(c% 8==0){
-            putchar(' ');
-        }
-    }
-    putchar('\n');
-}
+//     for(unsigned int c=1; c<=32; c++){
+//         putchar(value & displayMask ? '1': '0' );
+//         value <<=1;
+//         if(c% 8==0){
+//             putchar(' ');
+//         }
+//     }
+//     putchar('\n');
+// }
 
 
 int break_binary2(int instruction, int start, int end){

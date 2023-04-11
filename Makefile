@@ -2,20 +2,20 @@ TARGET = vm_riskxvii
 
 CC = gcc
 
-CFLAGS     = -c -Wall -Wvla -Werror -Os -g -std=c11
-LDFLAGS    = -W1,-s 
+CFLAGS     = -c -Wall -Wvla -Werror -O0 -g -std=c11
+ASAN_FLAGS = 
 SRC        = vm_riskxvii.c
 OBJ        = $(SRC:.c=.o)
 
 all:$(TARGET)
 
 $(TARGET):$(OBJ)
-	$(CC) $(LDFAGS) -o $@ $(OBJ)
+	$(CC) $(ASAN_FLAGS) -o $@ $(OBJ)
 
 .SUFFIXES: .c .o
 
 .c.o:
-	 $(CC) $(CFLAGS) $<
+	 $(CC) $(CFLAGS) $(ASAN_FLAGS) $<
 
 run:
 	./$(TARGET)
